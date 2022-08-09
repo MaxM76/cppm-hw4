@@ -11,15 +11,16 @@ private:
     int flat;
 public:
 
+    Address() {
+        building = 0;
+        flat = 0;
+    }
+
     Address(std::string aTown, std::string aStreet, int aBuilding, int aFlat) {
         town = aTown;
         street = aStreet;
         building = aBuilding;
         flat = aFlat;
-    }
-
-    ~Address() {
-
     }
 
     std::string getTown() {
@@ -45,23 +46,24 @@ int main()
     setlocale(LC_ALL, "Russian");
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
+
     int addressesCount = 0;
     std::string aTown;
     std::string aStreet;
-    int aBuilding;
-    int aFlat;
+    int aBuilding = 0;
+    int aFlat = 0;
 
     std::ifstream fin("in.txt");
     if (fin.is_open()) {
         fin >> addressesCount;
         if (addressesCount > 0) {
-            Address* addressesArray = (Address*)operator new(sizeof(Address) * addressesCount);
+            Address* addressesArray = new Address[addressesCount];
             for (int i = 0; i < addressesCount; i++) {
                 fin >> aTown;
                 fin >> aStreet;
                 fin >> aBuilding;
                 fin >> aFlat;
-                new(&addressesArray[i]) Address(aTown, aStreet, aBuilding, aFlat);
+                addressesArray[i] = Address(aTown, aStreet, aBuilding, aFlat);
             }
             fin.close();
 
@@ -75,10 +77,7 @@ int main()
                     << addressesArray[i].getFlat();
             }
             fout.close();
-            for (int i = 0; i < addressesCount; i++) {
-                addressesArray[i].~Address();
-            }
-            operator delete(addressesArray);
+            delete[] addressesArray;
         }
     }
 }

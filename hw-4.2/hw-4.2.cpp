@@ -9,16 +9,16 @@ private:
     int building;
     int flat;
 public:
+    Address() {
+        building = 0;
+        flat = 0;
+    }
 
     Address(std::string aTown, std::string aStreet, int aBuilding, int aFlat) {
         town = aTown;
         street = aStreet;
         building = aBuilding;
         flat = aFlat;
-    }
-
-    ~Address() {
-
     }
 
     void setAddress(Address address) {
@@ -54,32 +54,27 @@ int main()
     int addressesCount = 0;
     std::string aTown;
     std::string aStreet;
-    int aBuilding;
-    int aFlat;
+    int aBuilding = 0;
+    int aFlat = 0;
 
     std::ifstream fin("in.txt");
     if (fin.is_open()) {
         fin >> addressesCount;
         if (addressesCount > 0) {
-            Address* addressesArray = (Address*)operator new(sizeof(Address) * addressesCount);
+            Address* addressesArray = new Address[addressesCount];
             for (int i = 0; i < addressesCount; i++) {
                 fin >> aTown;
                 fin >> aStreet;
                 fin >> aBuilding;
                 fin >> aFlat;
-                new(&addressesArray[i]) Address(aTown, aStreet, aBuilding, aFlat);
+                addressesArray[i] = Address(aTown, aStreet, aBuilding, aFlat);
             }
             fin.close();
 
             for (int i = 0; i < addressesCount - 1; i++) {
                 for (int j = i + 1; j < addressesCount; j++) {
                     if (addressesArray[j].getTown() < addressesArray[i].getTown()) {
-                        Address address(addressesArray[j].getTown(),
-                            addressesArray[j].getStreet(),
-                            addressesArray[j].getBuilding(),
-                            addressesArray[j].getFlat());
-                        addressesArray[j].setAddress(addressesArray[i]);
-                        addressesArray[i].setAddress(address);
+                        std::swap(addressesArray[i], addressesArray[j]);
                     }
                 }
             }
@@ -94,10 +89,7 @@ int main()
                     << addressesArray[i].getFlat();
             }
             fout.close();
-            for (int i = 0; i < addressesCount; i++) {
-                addressesArray[i].~Address();
-            }
-            operator delete(addressesArray);
+            delete[] addressesArray;
         }
     }
 }
