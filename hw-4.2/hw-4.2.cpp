@@ -21,14 +21,6 @@ public:
         flat = aFlat;
     }
 
-    void setAddress(Address address) {
-        town = address.getTown();
-        street = address.getStreet();
-        building = address.getBuilding();
-        flat = address.getFlat();
-    }
-
-
     std::string getTown() {
         return town;
     }
